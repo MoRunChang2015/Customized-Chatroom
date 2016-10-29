@@ -1,0 +1,27 @@
+CC := g++
+
+SRCDIR := src/util
+BUILDDIR := build
+
+SRCEXT := cpp
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+CFLAGS := -g -w -std=c++11
+INC := -I include
+STATIC_ANALYZER := oclint
+
+ALL : $(OBJECTS)
+
+$(BUILDDIR)/%.o : $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	@echo " $(CC) $(CFLAGS) $(INC) $(LIB) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+static-analyze:
+	$(STATIC_ANALYZER) $(SOURCES) -- -c $(CFLAGS) $(INC) $(LIB)
+
+clean:
+	@echo " Cleaning... "
+	@echo " rm -rf $(BUILDDIR) $(TARGET)"; rm -rf $(BUILDDIR) $(TARGET)
+
+
+.PHONY: clean
