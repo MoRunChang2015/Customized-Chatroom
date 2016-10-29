@@ -3,9 +3,12 @@ CC := g++
 SRCDIR := src/client
 BUILDDIR := build
 TARGET := bin/Client
+UTILDIR := src/util
 
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+UTILSOURCES := $(shell find $(UTILDIR) -type f -name *.$(SRCEXT))
+UTILOBJECTS := $(patsubst $(UTILDIR)/%,$(BUILDDIR)/%,$(UTILSOURCES:.$(SRCEXT)=.o))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -w -std=c++11
 INC := -I include
@@ -15,7 +18,7 @@ $(TARGET) : $(OBJECTS)
 	@echo " Making Utils"; make -f Makefile.util
 	@echo " Linking "
 	@mkdir -p bin
-	@echo " $(CC) $^ -o $(TARGET) $(LIB) $(LINKER)"; $(CC) $^ -o $(TARGET)
+	@echo " $(CC) $^ $(UTILOBJECTS) -o $(TARGET) $(LIB) $(LINKER)"; $(CC) $^ $(UTILOBJECTS) -o $(TARGET)
 
 $(BUILDDIR)/%.o : $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
