@@ -27,8 +27,8 @@ public:
 
     static ssize_t catchSegment(int socketDescriptor, void *segment,
                                 unsigned short destPort, unsigned int destIP,
-                                unsigned short srcPort = 0, unsigned int srcIP = 0);
-    static bool sendSegment(int socketDescriptor, unsigned int destIP, void *tcpSegment, int size);
+                                unsigned short &srcPort, unsigned int &srcIP);
+    static ssize_t sendSegment(int socketDescriptor, unsigned int destIP, void *tcpSegment, int size);
 };
 
 

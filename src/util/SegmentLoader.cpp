@@ -17,7 +17,7 @@ char SegmentLoader::buffer[BUFFER_SIZE] = {0};
 
 ssize_t SegmentLoader::catchSegment(int socketDescriptor, void *segment,
                                     unsigned short destPort, unsigned int destIP,
-                                    unsigned short srcPort, unsigned int srcIP) {
+                                    unsigned short &srcPort, unsigned int &srcIP) {
 
     while (true) {
         ssize_t size = recv(socketDescriptor, buffer, BUFFER_SIZE, 0);
@@ -43,6 +43,9 @@ ssize_t SegmentLoader::catchSegment(int socketDescriptor, void *segment,
             if (tcp->destPort != destPort) continue;
         }
 
+        srcIP = ip->srcIP;
+        srcPort = tcp->srcPort;
+
         size_t segmentLength = htons(ip->datagramLength) - IPHeaderLength;
         memcpy(segment, tcp, segmentLength);
         return segmentLength;
@@ -50,11 +53,11 @@ ssize_t SegmentLoader::catchSegment(int socketDescriptor, void *segment,
     }
 }
 
-bool SegmentLoader::sendSegment(int socketDescriptor, unsigned int destIP, void *tcpSegment, int size) {
+ssize_t SegmentLoader::sendSegment(int socketDescriptor, unsigned int destIP, void *tcpSegment, int size) {
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
     sin.sin_port = htons(((TCPHeader *)tcpSegment)->destPort);
     sin.sin_addr.s_addr = destIP;
 
-    return sendto(socketDescriptor, tcpSegment, size + 20, 0, (struct sockaddr *)&sin, sizeof(sin)) < 0;
+    return sendto(socketDescriptor, tcpSegment, size + 20, 0, (struct sockaddr *)&sin, sizeof(sin));
 }

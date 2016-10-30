@@ -1,16 +1,50 @@
-
-
-#include <sys/socket.h>
-
 #include "TCPAcceptor.h"
-#include "TCPStream.h"
-
 
 TCPAcceptor::TCPAcceptor(int port, const string &address)
     : port(port), address(address) {
-    socketDescriptor = socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_IP));
+    socketDescriptor = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
+    _le_port = htons(port);
+    _le_address = inet_addr(address.c_str());
 }
 
 TCPStream *TCPAcceptor::accept() {
-    SegmentLoader::catchSegment(socketDescriptor, )
+    char *buffer = new char[BUFFER_SIZE];
+
+    while (true) {
+
+        unsigned short srcPort = 0;
+        unsigned int srcIP = 0;
+
+
+        //  await the first handshake
+        ssize_t segmentSize = SegmentLoader::catchSegment(socketDescriptor, buffer,
+                                                          _le_port, _le_address,
+                                                          srcPort, srcIP);
+        if (segmentSize == -1) {
+            delete buffer;
+            return nullptr;
+        }
+
+        TCPSegment segment(buffer);
+        if (!(!segment.isACK() && segment.isSYN() && !segment.isFIN())) continue;
+
+        //  send the second handshake
+        segment.setACK(true);
+
+        segment.header->srcPort = segment.header->destPort;
+        segment.header->destPort = srcPort;
+        segmentSize = SegmentLoader::sendSegment(socketDescriptor, srcIP, buffer, sizeof(TCPHeader));
+
+        //  await the thrid handshake
+        segmentSize = SegmentLoader::catchSegment(socketDescriptor, buffer,
+                                                  _le_port, _le_address,
+                                                  srcPort, srcIP);
+
+        segment.setBuffer(buffer);
+        if (!(segment.isACK() && !segment.isSYN() && !segment.isFIN())) continue;
+
+        TCPStream * tcpStream = new TCPStream(socketDescriptor, srcPort, buffer);
+        return tcpStream;
+
+    }
 }

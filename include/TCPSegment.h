@@ -1,6 +1,8 @@
 #ifndef TCPSEGMENT_H
 #define TCPSEGMENT_H
 
+#include <arpa/inet.h>
+
 typedef struct TCPHeader {
     unsigned short srcPort;
     unsigned short destPort;
@@ -16,11 +18,25 @@ typedef struct TCPHeader {
 class TCPSegment {
 public:
     TCPSegment();
+    TCPSegment(void *buffer);
 
-    void setHeader(TCPHeader &header);
+    void setBuffer(void *buffer);
+
+    unsigned short getSrcPort();
+    void setSrcPort(unsigned short srcPort);
+    unsigned short getDestPort();
+    void setDestPort(unsigned short destPort);
 
 
-    TCPHeader header;
+    bool isACK();
+    bool isSYN();
+    bool isFIN();
+
+    void setACK(bool flag);
+    void setSYN(bool flag);
+    void setFIN(bool flag);
+
+    TCPHeader *header;
     void *data;
 };
 

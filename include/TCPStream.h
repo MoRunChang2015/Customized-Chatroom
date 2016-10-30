@@ -19,11 +19,13 @@ public:
     ssize_t read(string &buffer, size_t len);
 
 private:
-    TCPStream();
+    TCPStream(int socketDescriptor, unsigned short destPort, char *buffer);
     TCPStream(const TCPStream &);
 
+    char *buffer;
+
     int socketDescriptor;
-    int destPort;
+    unsigned short destPort;
 };
 
 
