@@ -4,7 +4,7 @@ SRC := src/util
 TEST := test
 CXXFLAG := -g -std=c++11 -I $(INC)
 
-bin/sendSegment:
+bin/sendSegment:bin/acceptor
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/sendSegment.cpp -o $@
 
