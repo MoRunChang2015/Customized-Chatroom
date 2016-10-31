@@ -17,9 +17,9 @@ int main(void) {
     int s = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
     tcpSegment.setSYN(true);
     cout << "1 " <<  tcpSegment.isSYN() << tcpSegment.isACK() << tcpSegment.isFIN() << endl;
-    cout << SegmentLoader::sendSegment(s, inet_addr("127.0.0.1"), buffer, 25) << endl;
+    cout << SegmentLoader::sendSegment(s, inet_addr("192.168.199.106"), buffer, 25) << endl;
 
-    unsigned int ip = inet_addr("127.0.0.1");
+    unsigned int ip = inet_addr("192.168.199.106");
     unsigned short port = htons(8080);
 
     SegmentLoader::catchSegment(s, buffer, htons(8000), ip, port, ip);
