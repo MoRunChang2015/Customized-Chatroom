@@ -8,10 +8,12 @@ bin/sendSegment:
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/sendSegment.cpp -o $@
 
-bin/catchSegment:
-	mkdir -p bin
-	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/catchSegment.cpp -o $@
 
 bin/acceptor:
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/TCPStream.cpp $(SRC)/TCPAcceptor.cpp $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/acceptor.cpp -o $@
+
+
+bin/catchSegment:
+	mkdir -p bin
+	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/catchSegment.cpp -o $@
