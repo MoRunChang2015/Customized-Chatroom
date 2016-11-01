@@ -4,13 +4,9 @@ SRC := src/util
 TEST := test
 CXXFLAG := -g -std=c++11 -I $(INC)
 
-bin/sendSegment:
+bin/sendSegment:bin/acceptor
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/sendSegment.cpp -o $@
-
-bin/catchSegment:
-	mkdir -p bin
-	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/catchSegment.cpp -o $@
 
 bin/acceptor:
 	mkdir -p bin
@@ -19,3 +15,7 @@ bin/acceptor:
 bin/connector:
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/TCPStream.cpp $(SRC)/TCPConnector.cpp $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/connector.cpp -o $@
+
+bin/catchSegment:
+	mkdir -p bin
+	$(GCC) -g -I include -std=c++11 $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/catchSegment.cpp -o $@
