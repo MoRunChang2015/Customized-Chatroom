@@ -15,3 +15,7 @@ bin/catchSegment:
 bin/acceptor:
 	mkdir -p bin
 	$(GCC) -g -I include -std=c++11 $(SRC)/TCPStream.cpp $(SRC)/TCPAcceptor.cpp $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/acceptor.cpp -o $@
+
+bin/connector:
+	mkdir -p bin
+	$(GCC) -g -I include -std=c++11 $(SRC)/TCPStream.cpp $(SRC)/TCPConnector.cpp $(SRC)/SegmentLoader.cpp $(SRC)/TCPSegment.cpp $(TEST)/connector.cpp -o $@

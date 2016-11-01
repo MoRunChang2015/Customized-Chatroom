@@ -26,6 +26,14 @@ void TCPSegment::setDestPort(unsigned short destPort) {
     header->destPort = htons(destPort);
 }
 
+void TCPSegment::addSeqNum(unsigned int offset) {
+    header->seqNum = htonl(htonl(header->seqNum) + offset);
+}
+
+void TCPSegment::addAckNum(unsigned int offset) {
+    header->ackNum = htonl(htonl(header->ackNum) + offset);
+}
+
 bool TCPSegment::isACK() {
     return htons(header->length_flag) & 0x0010;
 }

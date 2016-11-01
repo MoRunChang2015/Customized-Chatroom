@@ -27,6 +27,8 @@ public:
     unsigned short getDestPort();
     void setDestPort(unsigned short destPort);
 
+    void addSeqNum(unsigned int offset);
+    void addAckNum(unsigned int offset);
 
     bool isACK();
     bool isSYN();

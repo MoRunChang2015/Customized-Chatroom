@@ -1,7 +1,7 @@
 #include "TCPAcceptor.h"
 
 TCPAcceptor::TCPAcceptor(int port, const string &address)
-    : port(port), address(address) {
+    : port(port), address(address), bound(false) {
     socketDescriptor = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
     _le_port = htons(port);
     _le_address = inet_addr(address.c_str());
@@ -30,9 +30,9 @@ TCPStream *TCPAcceptor::accept() {
 
         //  send the second handshake
         segment.setACK(true);
-
         segment.header->srcPort = segment.header->destPort;
         segment.header->destPort = srcPort;
+        segment.addAckNum(1);
         segmentSize = SegmentLoader::sendSegment(socketDescriptor, srcIP, buffer, sizeof(TCPHeader));
 
         //  await the thrid handshake

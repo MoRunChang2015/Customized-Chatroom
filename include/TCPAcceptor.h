@@ -2,6 +2,7 @@
 #define TCPACCEPTOR_H
 
 #include <string>
+#include <vector>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -19,6 +20,8 @@ public:
     TCPStream *accept();
 
 private:
+    bool bound;
+
     unsigned short port;
     unsigned int _le_port;
 
