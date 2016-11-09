@@ -1,6 +1,6 @@
 #include "TCPConnector.h"
 
-vector<unsigned short> TCPConnector::usedPort {START_PORT};
+vector<unsigned short> TCPConnector::usedPort{START_PORT};
 
 TCPStream *TCPConnector::connect(const string &server, unsigned short port) {
     //  create a socket
@@ -9,7 +9,7 @@ TCPStream *TCPConnector::connect(const string &server, unsigned short port) {
         return nullptr;
     }
 
-    char *buffer = new char[BUFFER_SIZE] {0};
+    char *buffer = new char[BUFFER_SIZE]{0};
 
     //  destination address
     unsigned int _le_destAddress = inet_addr(server.c_str());
@@ -19,13 +19,15 @@ TCPStream *TCPConnector::connect(const string &server, unsigned short port) {
     //  allocate local port
     usedPort.push_back(usedPort.back() + 1);
     unsigned short _le_srcPort = htons(usedPort.back());
-    TCPHeader tcpHeader {_le_srcPort, _le_destPort, 0, 0, htons(5 << 12), htons(5000), 0, 0};
+    TCPHeader tcpHeader{_le_srcPort,    _le_destPort, 0, 0,
+                        htons(5 << 12), htons(5000),  0, 0};
     memcpy(buffer, &tcpHeader, sizeof(TCPHeader));
     TCPSegment tcpSegment(buffer);
 
     tcpSegment.setSYN(true);
     //  send the first handshake
-    ssize_t segmentSize = SegmentLoader::sendSegment(socketDescriptor, _le_destAddress, buffer, 20);
+    ssize_t segmentSize = SegmentLoader::sendSegment(
+        socketDescriptor, _le_destAddress, buffer, 20);
 
     //  get the second handshake
     segmentSize = SegmentLoader::catchSegment(socketDescriptor, buffer,
@@ -42,7 +44,7 @@ TCPStream *TCPConnector::connect(const string &server, unsigned short port) {
     tcpSegment.header->destPort = _le_destPort;
     tcpSegment.addSeqNum(1);
     //  send the third handshake
-    SegmentLoader::sendSegment(socketDescriptor, _le_destAddress, buffer, sizeof(tcpHeader));
+    SegmentLoader::sendSegment(socketDescriptor, _le_destAddress, buffer,
+                               sizeof(tcpHeader));
     return new TCPStream(socketDescriptor, _le_destPort, buffer);
 }
-
